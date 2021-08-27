@@ -123,30 +123,6 @@ void calcMass2d() {
   }
 }
 
-void calcNewMap() {
-  for (int i = 0; i < 15; i++)
-  {
-    for (int j = 0; j < sizeMassX; j++)
-    {
-      if (true)
-      {
-        heightMap2d[sizeMassX + i][j] = rand() / (32767 / maxRand);
-        heightMap2d[sizeMassX + i][j] = (int)heightMap2d[sizeMassX + i][j];
-        if (heightMap2d[sizeMassX + i][j] / 10 >= 1)
-        {
-          heightMap2d[sizeMassX + i][j] = 1;
-        }
-        else
-        {
-          heightMap2d[sizeMassX + i][j] = 0;
-        }
-      }
-    }
-  }
-  sizeMassX += 15;
-  printf("size massX: %d\n size massY: %d\n", sizeMassX, sizeMassY);
-}
-
 void drawMass2d() {
   glViewport(30, 30, 600, 600);
   glPointSize(pointSize);
@@ -171,13 +147,8 @@ void draw() {
     calcLine();//function random line calculate
     drawLine();
   }
-  //calcMass2d();
-  //calcNewMap();
   drawMass2d();
-  //Sleep(600);
   glutSwapBuffers();//show colculated draw function
-  //scanf_s("%d", &smoothing);
-  //printf("<<render of screen>>\n");
 }
 
 void processNormalKeys(unsigned char key, int x, int y) {
