@@ -1,45 +1,20 @@
 #include <GL\glut.h>
-#include <stdio.h>
-#include <cstdlib>
-#include <iostream>
-#include <stdlib.h>
-#include <math.h>
-#include <malloc.h>
-#include <time.h>
+#include "Source.h"
 
 #pragma warning(disable : 4996)
 
-
 GLshort const sizeMap2d = 5000;
-GLint const windowX = 800, windowY = 750, windowPositionX = 250, windowPositionY = 10;
+GLint const windowX = 800, windowY = 800, windowPositionX = 250, windowPositionY = 0;
 GLint const halfSizeX = windowX / 2, halfSizeY = windowY / 2; //Simplification of calculations
 GLint smoothing = 8, maxRand = 26;//smoothing map and number for calculeted points
-GLint sizeMassX = 350, sizeMassY = 350, pointSize = 4;
-GLfloat mass[500], heightMap2d[sizeMap2d][sizeMap2d], riversMap2d[sizeMap2d][sizeMap2d];
+GLint sizeMassX = 200, sizeMassY = 200, pointSize = 3;
+GLfloat heightMap2d[sizeMap2d][sizeMap2d], riversMap2d[sizeMap2d][sizeMap2d];
 
 void init() {
   glClearColor(0.0, 0.0, 0.0, 0);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluOrtho2D(0, 600, 0, 600);
-}
-
-void smoothing1d(int count) {
-  while (count > 0)
-  {
-    for (int i = 1; i < sizeMassX; i++)
-    {
-      if (mass[i] < (mass[i - 1] + mass[i + 1]) / 2)
-      {
-        mass[i] += ((mass[i - 1] + mass[i + 1]) / 2) - mass[i];
-      }
-      else
-      {
-        mass[i] -= mass[i] - ((mass[i - 1] + mass[i + 1]) / 2);
-      }
-    }
-    count--;
-  }
 }
 
 void smoothing2d(int count) {
@@ -76,35 +51,7 @@ void smoothing2d(int count) {
   printf("\n");
 }
 
-void calcLine() {
-  for (int i = 0; i <= sizeMassX; i += 4)
-  {
-    mass[i] = ((int)(rand() / (32767 / maxRand))) / 10;
-  }
-  for (int i = 2; i < sizeMassX; i += 4) {
-    mass[i] = (mass[i-2]+mass[i+2]) / 2;
-    mass[i-1] = (mass[i-2]+mass[i]) / 2;
-    mass[i+1] = (mass[i]+mass[i+2]) / 2;
-  }
-  if(false)
-  for (int i = 0; i < sizeMassX; i++)
-  { 
-    printf("%.0f\n", mass[i]);
-  }
-  smoothing1d(smoothing);
-}
-
-void drawLine() {
-  glViewport(30, 30, 600, 600);
-  glBegin(GL_LINE_STRIP);
-  glColor3d(0.0, 1.0, 0.0);
-  for (int i = 0; i < sizeMassX; i++) {
-    glVertex3d(i * 3, mass[i], 0);
-  }
-  glEnd();
-}
-
-void calcMass2d() {
+void calcHeightMap2d() {
   for (int i = 0; i < sizeMassX; i++) {
     for (int j = 0; j < sizeMassY; j++) {
       heightMap2d[i][j] = rand() / (32767 / maxRand);
@@ -123,8 +70,8 @@ void calcMass2d() {
   }
 }
 
-void drawMass2d() {
-  glViewport(30, 30, 600, 600);
+void drawHeight2d() {
+  glViewport(2, 2, 800, 800);
   glPointSize(pointSize);
   glBegin(GL_POINTS);
   for (int i = 0; i < sizeMassX; i++) {
@@ -140,21 +87,34 @@ void drawMass2d() {
   glEnd();
 }
 
+void calcRivers() {
+  for (int i = 0; i < sizeMassX; i++) {
+    for (int j = 0; j < sizeMassY; j++) {
+      riversMap2d[i][j] = rand() / (32767 / maxRand);
+      riversMap2d[i][j] = (int)riversMap2d[i][j];
+      if (riversMap2d[i][j] / 10 >= 1)
+      {
+        riversMap2d[i][j] = 1;
+      }
+      else
+      {
+        riversMap2d[i][j] = 0;
+      }
+    }
+  }
+}
+
 void draw() {
   glClear(GL_COLOR_BUFFER_BIT);
-  if(false)
-  {
-    calcLine();//function random line calculate
-    drawLine();
-  }
-  drawMass2d();
+
+  drawHeight2d();
   glutSwapBuffers();//show colculated draw function
 }
 
 void processNormalKeys(unsigned char key, int x, int y) {
   if (key == 'w')
   {
-    calcMass2d();
+    calcHeightMap2d();
     draw();
   }
 }
@@ -162,7 +122,7 @@ void processNormalKeys(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
   if(true)
   {
-    calcMass2d();
+    calcHeightMap2d();
     smoothing2d(smoothing);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE | GLUT_STENCIL | GLUT_ACCUM);
