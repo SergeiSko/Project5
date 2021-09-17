@@ -68,56 +68,56 @@ public:
     printf("\n");
   }
 
-  void static calcTemperatureMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
+  void static calcTemperatureMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed1);
+        massMap[i][j] = binarRand(maxRand, seed);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate TemperatureMap - %d\n", clock() - start_time);
   }
 
-  void static calcHumidityMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
+  void static calcHumidityMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed2);
+        massMap[i][j] = binarRand(maxRand, seed);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HumidityMap - %d\n", clock() - start_time);
   }
 
-  void static calcLocationMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
+  void static calcLocationMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed1);
+        massMap[i][j] = binarRand(maxRand, seed);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HumidityMap - %d\n", clock() - start_time);
   }
 
-  void static calcHeightMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
+  void static calcHeightMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed1);
+        massMap[i][j] = binarRand(maxRand, seed);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HeightMap - %d\n", clock() - start_time);
   }
 
-  void static calcRiversMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
+  void static calcRiversMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
 
-        massMap[i][j] = binarRand(maxRand, seed2);
+        massMap[i][j] = binarRand(maxRand, seed);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
