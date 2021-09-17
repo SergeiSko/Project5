@@ -19,20 +19,8 @@ using namespace chrono;
 class CalcMap {
 private:
   short static const sizeMap = 5000;
-  long seed1 = system_clock::now().time_since_epoch().count() % 10;
-  long seed2 = system_clock::now().time_since_epoch().count() % 10;
 
 public:
-  float newBinarRand(float с) {//47015 против 480-600
-    int temp = system_clock::now().time_since_epoch().count() % 10;
-    default_random_engine rnd(temp);
-    uniform_int_distribution<int> d(0, 10);
-    if (d(rnd) > с)
-      return 1.f;
-    else
-      return 0.f;
-  }
-
   int static binarRand(float maxRand) {
     GLfloat number = rand() * (maxRand / 32767);
     number = (int)number;
@@ -45,6 +33,7 @@ public:
       return 0;
     }
   }
+
   void static smoothMap(int count, GLfloat(&massMap)[sizeMap][sizeMap], GLint sizeMassX, GLint sizeMassY) {
     float temp;
     while (count > 0)

@@ -6,13 +6,15 @@
 GLshort const sizeMap = 5000;
 GLint const windowX = 800, windowY = 800, windowPositionX = 350, windowPositionY = 0;
 GLint const halfWindowX = windowX / 2, halfWindowY = windowY / 2; //Pre-calculations
-GLfloat smoothHeight = 8, smoothRivers = 10, smoothTemperature = 3, smoothHumidity = 3,
-        maxRandHeight = 26, maxRandRivers = 22,
+GLfloat smoothHeight = 8, smoothRivers = 17, smoothTemperature = 3, smoothHumidity = 3,
+        maxRandHeight = 26, maxRandRivers = 24,
         maxRandTemperature = 25, maxRandHumidity = 25;//smoothing map and number for calculeted points
 GLint sizeMassX = 2000, sizeMassY = 2000, pointSize = 3;
 GLfloat heightMap[sizeMap][sizeMap], riversMap[sizeMap][sizeMap], locationsMap[sizeMap][sizeMap],
         temperatureMap[sizeMap][sizeMap], humidityMap[sizeMap][sizeMap];
 int seed = system_clock::now().time_since_epoch().count() % 10;
+long seed1 = system_clock::now().time_since_epoch().count() % 10;
+long seed2 = seed1 + 5;
 CalcMap cm;
 
 using namespace std;
@@ -61,7 +63,7 @@ void static drawMap() {
 void draw() {
   glClear(GL_COLOR_BUFFER_BIT);
   int cores_count = thread::hardware_concurrency();
-  srand(seed);
+  //srand(seed);
   unsigned int start_time = clock();
 
   thread t1(cm.calcTemperatureMap, sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature);
