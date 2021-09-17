@@ -19,10 +19,21 @@ using namespace chrono;
 class CalcMap {
 private:
   short static const sizeMap = 5000;
+  long seed1 = system_clock::now().time_since_epoch().count() % 10;
+  long seed2 = system_clock::now().time_since_epoch().count() % 10;
 
 public:
-  int static binarRand(float maxRand, long seed) {
-    srand(seed);
+  float newBinarRand(float с) {//47015 против 480-600
+    int temp = system_clock::now().time_since_epoch().count() % 10;
+    default_random_engine rnd(temp);
+    uniform_int_distribution<int> d(0, 10);
+    if (d(rnd) > с)
+      return 1.f;
+    else
+      return 0.f;
+  }
+
+  int static binarRand(float maxRand) {
     GLfloat number = rand() * (maxRand / 32767);
     number = (int)number;
     if (number / 10 >= 1)
@@ -68,59 +79,79 @@ public:
     printf("\n");
   }
 
-  void static calcTemperatureMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
+  void static calcTemperatureMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed);
+        massMap[i][j] = binarRand(maxRand);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate TemperatureMap - %d\n", clock() - start_time);
   }
 
-  void static calcHumidityMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
+  void static calcHumidityMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed);
+        massMap[i][j] = binarRand(maxRand);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HumidityMap - %d\n", clock() - start_time);
   }
 
-  void static calcLocationMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
+  void static calcLocationMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed);
+        massMap[i][j] = binarRand(maxRand);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HumidityMap - %d\n", clock() - start_time);
   }
 
-  void static calcHeightMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
+  void static calcHeightMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
-        massMap[i][j] = binarRand(maxRand, seed);
+        massMap[i][j] = binarRand(maxRand);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate HeightMap - %d\n", clock() - start_time);
   }
 
-  void static calcRiversMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth, long seed) {
+  void static calcRiversMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
 
-        massMap[i][j] = binarRand(maxRand, seed);
+        massMap[i][j] = binarRand(maxRand);
       }
     }
     smoothMap(smooth, massMap, sizeMassX, sizeMassY);
     printf("Calculate RiversMap - %d\n", clock() - start_time);
+  }
+  void threadCalcTemperatureMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth)
+  {
+    thread t(calcTemperatureMap, sizeMassX, sizeMassY, ref(massMap), maxRand, smooth);
+    t.join();
+  }
+  void threadCalcHumidityMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth)
+  {
+    thread t(calcHumidityMap, sizeMassX, sizeMassY, ref(massMap), maxRand, smooth);
+    t.join();
+  }
+  void threadCalcHeightMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth)
+  {
+    thread t(calcHeightMap, sizeMassX, sizeMassY, ref(massMap), maxRand, smooth);
+    t.join();
+  }
+  void threadCalcRiversMap(GLint const sizeMassX, GLint const sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth)
+  {
+    thread t(calcRiversMap, sizeMassX, sizeMassY, ref(massMap), maxRand, smooth);
+    t.join();
   }
 };

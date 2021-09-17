@@ -12,8 +12,7 @@ GLfloat smoothHeight = 8, smoothRivers = 10, smoothTemperature = 3, smoothHumidi
 GLint sizeMassX = 2000, sizeMassY = 2000, pointSize = 3;
 GLfloat heightMap[sizeMap][sizeMap], riversMap[sizeMap][sizeMap], locationsMap[sizeMap][sizeMap],
         temperatureMap[sizeMap][sizeMap], humidityMap[sizeMap][sizeMap];
-long seed1 = system_clock::now().time_since_epoch().count() % 10;
-long seed2 = system_clock::now().time_since_epoch().count() % 10;
+int seed = system_clock::now().time_since_epoch().count() % 10;
 CalcMap cm;
 
 using namespace std;
@@ -61,12 +60,13 @@ void static drawMap() {
 
 void draw() {
   glClear(GL_COLOR_BUFFER_BIT);
+  srand(seed);
   unsigned int start_time = clock();
 
-  thread t1(cm.calcTemperatureMap, sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature, seed1);
-  thread t2(cm.calcHumidityMap, sizeMassX, sizeMassY, ref(humidityMap), maxRandHumidity, smoothHumidity, seed2);
-  thread t3(cm.calcHeightMap, sizeMassX, sizeMassY, ref(heightMap), maxRandHeight, smoothHeight, seed1);
-  thread t4(cm.calcRiversMap, sizeMassX, sizeMassY, ref(riversMap), maxRandRivers, smoothRivers, seed2);
+  thread t1(cm.calcTemperatureMap, sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature);
+  thread t2(cm.calcHumidityMap, sizeMassX, sizeMassY, ref(humidityMap), maxRandHumidity, smoothHumidity);
+  thread t3(cm.calcHeightMap, sizeMassX, sizeMassY, ref(heightMap), maxRandHeight, smoothHeight);
+  thread t4(cm.calcRiversMap, sizeMassX, sizeMassY, ref(riversMap), maxRandRivers, smoothRivers);
   t1.join();
   t2.join();
   t3.join();
