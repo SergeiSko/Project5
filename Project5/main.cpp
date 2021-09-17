@@ -60,6 +60,7 @@ void static drawMap() {
 
 void draw() {
   glClear(GL_COLOR_BUFFER_BIT);
+  int cores_count = thread::hardware_concurrency();
   srand(seed);
   unsigned int start_time = clock();
 
