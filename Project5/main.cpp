@@ -6,8 +6,8 @@
 GLshort const sizeMap = 5000;
 GLint const windowX = 800, windowY = 800, windowPositionX = 350, windowPositionY = 0;
 GLint const halfWindowX = windowX / 2, halfWindowY = windowY / 2; //Pre-calculations
-GLfloat smoothHeight = 8, smoothRivers = 17, smoothTemperature = 3, smoothHumidity = 3,
-        maxRandHeight = 26, maxRandRivers = 24,
+GLfloat smoothHeight = 8, smoothRivers = 8, smoothTemperature = 3, smoothHumidity = 3,
+        maxRandHeight = 26, maxRandRivers = 26,
         maxRandTemperature = 25, maxRandHumidity = 25;//smoothing map and number for calculeted points
 GLint sizeMassX = 2000, sizeMassY = 2000, pointSize = 3;
 GLfloat heightMap[sizeMap][sizeMap], riversMap[sizeMap][sizeMap], locationsMap[sizeMap][sizeMap],
@@ -16,6 +16,11 @@ int seed = system_clock::now().time_since_epoch().count() % 10;
 long seed1 = system_clock::now().time_since_epoch().count() % 10;
 long seed2 = seed1 + 5;
 CalcMap cm;
+
+bool heightShow = true;
+bool riversShow = true;
+bool locationsShow = false;
+bool multitradingOn = true;
 
 using namespace std;
 using namespace chrono;
@@ -35,7 +40,7 @@ void static drawMap() {
   for (int i = 0; i < windowX/pointSize; i++) {
     for (int j = 0; j < windowY/pointSize; j++) {
       if (true)
-        if (riversMap[i][j] >= 0.585 && riversMap[i][j] <= 0.595 
+        if (riversShow && riversMap[i][j] >= 0.605 && riversMap[i][j] <= 0.625 
           && heightMap[i][j] > 0.55 && heightMap[i][j] < 0.65) glColor3d(0.1f, 0.1f, 1.0f);//add rivers on map
         else if (heightMap[i][j] > 0.70) glColor3d(0.0f, 0.0f, 0.8f);//add dark water
         else if (heightMap[i][j] > 0.65) glColor3d(0.0f, 0.0f, 1.0f);//water
@@ -63,18 +68,25 @@ void static drawMap() {
 void draw() {
   glClear(GL_COLOR_BUFFER_BIT);
   int cores_count = thread::hardware_concurrency();
-  //srand(seed);
   unsigned int start_time = clock();
-
-  thread t1(cm.calcTemperatureMap, sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature);
-  thread t2(cm.calcHumidityMap, sizeMassX, sizeMassY, ref(humidityMap), maxRandHumidity, smoothHumidity);
-  thread t3(cm.calcHeightMap, sizeMassX, sizeMassY, ref(heightMap), maxRandHeight, smoothHeight);
-  thread t4(cm.calcRiversMap, sizeMassX, sizeMassY, ref(riversMap), maxRandRivers, smoothRivers);
-  t1.join();
-  t2.join();
-  t3.join();
-  t4.join();
-  printf("Calculate map - %d\n", clock() - start_time);
+  if (multitradingOn&&cores_count >= 2) {
+    thread t1(cm.calcTemperatureMap, sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature);
+    thread t2(cm.calcHumidityMap, sizeMassX, sizeMassY, ref(humidityMap), maxRandHumidity, smoothHumidity);
+    thread t3(cm.calcHeightMap, sizeMassX, sizeMassY, ref(heightMap), maxRandHeight, smoothHeight);
+    thread t4(cm.calcRiversMap, sizeMassX, sizeMassY, ref(riversMap), maxRandRivers, smoothRivers);
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+  }
+  else
+  {
+    cm.calcTemperatureMap(sizeMassX, sizeMassY, ref(temperatureMap), maxRandTemperature, smoothTemperature);
+    cm.calcHumidityMap(sizeMassX, sizeMassY, ref(humidityMap), maxRandHumidity, smoothHumidity);
+    cm.calcHeightMap(sizeMassX, sizeMassY, ref(heightMap), maxRandHeight, smoothHeight);
+    cm.calcRiversMap(sizeMassX, sizeMassY, ref(riversMap), maxRandRivers, smoothRivers);
+  }
+    printf("Calculate map - %d\n", clock() - start_time);
   drawMap();
   glutSwapBuffers();//show colculated draw function
 }

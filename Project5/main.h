@@ -1,8 +1,8 @@
 #pragma once
 #include <stdio.h>
+#include <stdlib.h>
 #include <cstdlib>
 #include <iostream>
-#include <stdlib.h>
 #include <math.h>
 #include <malloc.h>
 #include <time.h>
@@ -10,6 +10,8 @@
 #include <chrono>
 #include <random>
 #include <thread>
+#include <limits.h>
+#include <random>
 
 //#pragma warning(disable : 4996)
 
@@ -19,7 +21,6 @@ using namespace chrono;
 class CalcMap {
 private:
   short static const sizeMap = 5000;
-
 public:
   int static binarRand(float maxRand) {
     GLfloat number = rand() * (maxRand / 32767);
@@ -32,6 +33,13 @@ public:
     {
       return 0;
     }
+  }
+
+public:
+  int static newBinarRand(float maxRand, unsigned int seed) {
+    //srandom(seed);
+    //unsigned int number = random();
+    return 0;
   }
 
   void static smoothMap(int count, GLfloat(&massMap)[sizeMap][sizeMap], GLint sizeMassX, GLint sizeMassY) {
@@ -103,6 +111,7 @@ public:
 
   void static calcHeightMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
+    srand(152512);
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
         massMap[i][j] = binarRand(maxRand);
@@ -114,6 +123,7 @@ public:
 
   void static calcRiversMap(GLint sizeMassX, GLint sizeMassY, GLfloat(&massMap)[sizeMap][sizeMap], GLfloat maxRand, GLfloat smooth) {
     unsigned int start_time = clock();
+    srand(759238);
     for (int i = 0; i < sizeMassX; i++) {
       for (int j = 0; j < sizeMassY; j++) {
 
