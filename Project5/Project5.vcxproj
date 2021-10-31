@@ -116,8 +116,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calc.cpp" />
+    <ClCompile Include="ChankGeneration.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Locations.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mob.cpp" />
+    <ClCompile Include="Mobs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
